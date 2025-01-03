@@ -1,12 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { AuthState } from '../../types/auth';
 
-const initialState: AuthState = {
-  isAuthenticated: false,
-  user: null,
-};
 
-// Demo users for testing
 const users = {
   'admin': {
     id: '0',
@@ -24,57 +18,73 @@ const users = {
     donationHistory: [],
     isAdmin: false
   },
-  'donor@example.com': {
-    id: '1',
-    email: 'donor@example.com',
-    name: 'John Donor',
-    points: 150,
-    donationHistory: [
-      { date: '2024-03-01', points: 50, type: 'Whole Blood' },
-      { date: '2024-02-01', points: 50, type: 'Whole Blood' },
-      { date: '2024-01-01', points: 50, type: 'Plasma' },
-    ],
-    isAdmin: false
+  'hospital@gmail.com': {
+    id: '3',
+    email: 'hospital@gmail.com',
+    name: 'City Hospital',
+    points: 0,
+    donationHistory: [],
+    isAdmin: false,
+    isHospital: true
   },
+  'ngo@gmail.com': {
+    id: '4',
+    email: 'ngo@gmail.com',
+    name: 'Blood Donors NGO',
+    points: 0,
+    donationHistory: [],
+    isAdmin: false,
+    isNGO: true
+  }
 };
+
+const initialState = {
+  isAuthenticated: false,
+  user: null as any,
+};
+
 
 const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    login: (state, action: PayloadAction<{ email: string; password: string }>) => {
-      const { email, password } = action.payload;
-      if ((email === 'nikpatil2123@gmail.com' && password === '1234') || 
-          (email === 'donor@example.com' && password === 'password123') ||
-          (email === 'admin' && password === 'admin')) {
-        state.isAuthenticated = true;
-        state.user = users[email];
-      }
+    loginSuccess: (state, action: PayloadAction<{ email: string }>) => {
+      const { email } = action.payload;
+      state.isAuthenticated = true;
+      state.user = users[email];
+    },
+    loginFailure: (state) => {
+      state.isAuthenticated = false;
+      state.user = null;
     },
     logout: (state) => {
       state.isAuthenticated = false;
       state.user = null;
     },
-    addDonation: (state, action: PayloadAction<{
-      name: string;
-      email: string;
-      phone: string;
-      amount: number;
-      date: string;
-      type: string;
-      points: number;
-    }>) => {
+    addDonation: (state, action: PayloadAction<{ donation: any }>) => {
       if (state.user) {
-        state.user.points += action.payload.points;
-        state.user.donationHistory.unshift({
-          date: action.payload.date,
-          points: action.payload.points,
-          type: action.payload.type,
-        });
+        state.user.donationHistory.push(action.payload.donation);
+        state.user.points += 10;
       }
     },
   },
 });
 
-export const { login, logout, addDonation } = authSlice.actions;
+export const { loginSuccess, loginFailure, logout, addDonation } = authSlice.actions;
+
+export const login = (credentials: { email: string; password: string }) => (dispatch: any) => {
+  const { email, password } = credentials;
+  
+  if ((email === 'nikpatil2123@gmail.com' && password === '1234') || 
+      (email === 'admin' && password === 'admin') ||
+      (email === 'hospital@gmail.com' && password === 'hos@123') ||
+      (email === 'ngo@gmail.com' && password === 'NGO@123')) {
+    dispatch(loginSuccess({ email }));
+    return true;
+  } else {
+    dispatch(loginFailure());
+    return false;
+  }
+};
+
 export default authSlice.reducer;

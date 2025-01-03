@@ -1,65 +1,63 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Heart, Mail, Lock } from 'lucide-react';
 import { login } from '../../store/slices/authSlice';
+
 
 export const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [error, setError] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const form = e.currentTarget as HTMLFormElement;
-    const formData = new FormData(form);
+    setError('');
 
-    const email = formData.get('email') as string;
-    const password = formData.get('password') as string;
-
-    // Check credentials
-    if ((email === 'geetbisoi@gmail.com' && password === '1234') ||
-        (email === 'donor@example.com' && password === 'password123') ||
-        (email === 'admin' && password === 'admin')) {
-      dispatch(login({ email, password }));
-      navigate('/rewards');
-    } else {
-      setError('Invalid email or password');
+    try {
+      const success = await dispatch(login({ email, password }));
+      if (success) {
+        navigate('/rewards');
+      } else {
+        setError('Invalid email or password');
+      }
+    } catch (err) {
+      setError('Login failed. Please try again.');
     }
   };
+
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
         <div className="text-center">
-
-          
           <Heart className="mx-auto h-12 w-12 text-red-500" />
           <h2 className="mt-6 text-3xl font-extrabold text-gray-900">Welcome back</h2>
           <p className="mt-2 text-sm text-gray-600">
-            Demo Credentials:
+            Available Logins:
             <br />
-            Email: geetbisoi@gmail.com
+            <span className="font-medium">User:</span> nikpatil2123@gmail.com / 1234
             <br />
-            Password: 1234
+            <span className="font-medium">Admin:</span> admin / admin
             <br />
+            <span className="font-medium">Hospital:</span> hospital@gmail.com / hos@123
             <br />
-            Admin Credentials:
-            <br />
-            Username: admin
-            <br />
-            Password: admin
+            <span className="font-medium">NGO:</span> ngo@gmail.com / NGO@123
           </p>
         </div>
 
+
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           {error && (
-            <div className="text-red-500 text-sm text-center">{error}</div>
+            <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-md text-sm">
+              {error}
+            </div>
           )}
           
           <div className="rounded-md shadow-sm space-y-4">
             <div>
-            
               <label htmlFor="email" className="sr-only">
                 Email address or Username
               </label>
@@ -71,6 +69,8 @@ export const Login = () => {
                   id="email"
                   name="email"
                   type="text"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   required
                   className="appearance-none rounded-md relative block w-full pl-10 px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-red-500 focus:border-red-500"
                   placeholder="Email address or Username"
@@ -89,21 +89,14 @@ export const Login = () => {
                   id="password"
                   name="password"
                   type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   required
                   className="appearance-none rounded-md relative block w-full pl-10 px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-red-500 focus:border-red-500"
                   placeholder="Password"
                 />
-                
-                
               </div>
             </div>
-
-            <p className="mt-2 text-sm text-gray-600">
-                        Already have an account?{' '}
-                        <Link to="/register" className="font-medium text-red-500 hover:text-red-400">
-                          Sign in
-                        </Link>
-                      </p>
           </div>
 
           <button
@@ -112,15 +105,6 @@ export const Login = () => {
           >
             Sign in
           </button>
-            <br></br>
-          <Link to="/register">
-          {/* <button
-            type="submit"
-            className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
-          >
-            Sign Up
-          </button> */}
-          </Link>
         </form>
       </div>
     </div>
