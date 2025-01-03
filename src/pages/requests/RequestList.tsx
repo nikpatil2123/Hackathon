@@ -21,7 +21,7 @@ export const RequestList: React.FC = () => {
       id: '1',
       bloodType: 'O+',
       units: 3,
-      urgency: 'high',
+      urgency: 'high', 
       status: 'open',
       patientName: 'Nikhil Patil',
       location: 'City Hospital, Block A',
