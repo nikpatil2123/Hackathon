@@ -4,7 +4,7 @@
 ![GitHub contributors](https://img.shields.io/github/contributors/nikpatil2123/Hackathon)
 ![GitHub stars](https://img.shields.io/github/stars/nikpatil2123/Hackathon?style=social)
 ![GitHub forks](https://img.shields.io/github/forks/nikpatil2123/Hackathon?style=social)
-![GitHub views](https://komarev.com/ghpvc/?username=nikpatil2123&repo=Hackathon&color=blue)
+![GitHub views](https://komarev.com/ghpvc/?username=nikpatil2123&repo=Hackathon&color=blue) <!-- Placeholder for repository views -->
 
 ## Objective
 
